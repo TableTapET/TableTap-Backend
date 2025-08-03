@@ -1,0 +1,15 @@
+[tool.black]
+line-length = 88
+target-version = ['py312']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+line_length = 88
+
+[tool.djlint]
+profile = "django"
+indent = 4
+blank_line_after_tag = true
+require_spaces_inside_tags = true
