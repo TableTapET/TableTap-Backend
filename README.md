@@ -32,7 +32,7 @@ This repository serves for the backend for the web app.
      ```
    - Mac/Linux
      ```bash
-     source .venv/scripts/activate
+     source .venv/bin/activate
      ```
 4. **Install dependencies to virtual environment**:
     ```
