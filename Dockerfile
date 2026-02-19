@@ -13,7 +13,7 @@ RUN pip install -r requirements.txt
 RUN pip install daphne
 
 # Copy the backend code into the container at /TableTap-Backend
-COPY /tableTapBackend/ /TableTap-Backend/
+COPY /apps/ /TableTap-Backend/
 
 COPY /scripts/dev.entrypoint.sh /dev.entrypoint.sh
 COPY /scripts/prod.entrypoint.sh /prod.entrypoint.sh
