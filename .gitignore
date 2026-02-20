@@ -1,4 +1,9 @@
 *.sqlite3
 *.pyc 
 /notes
+
+# PyCache
+__pycache__/
+
+# Enviornment variables
 *.env
