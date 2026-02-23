@@ -7,3 +7,4 @@ __pycache__/
 
 # Enviornment variables
 *.env
+.DS_Store
