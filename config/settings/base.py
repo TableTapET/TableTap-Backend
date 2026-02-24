@@ -63,7 +63,19 @@ INSTALLED_APPS = [
     "corsheaders",
     "apps.accounts",
     "config",
+    "rest_framework",
+    "drf_spectacular",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'TableTap API',
+    'DESCRIPTION': 'API Documenation',
+    'VERSION': '1.0.0',
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
