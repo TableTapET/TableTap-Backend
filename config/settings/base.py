@@ -62,6 +62,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "apps.accounts",
+    "apps.restaurants",
+    "apps.menus",
+    "apps.tables",
+    "apps.customers",
+    "apps.orders",
+    "apps.feedback",
     "config",
 ]
 
