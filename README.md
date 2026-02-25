@@ -12,12 +12,11 @@ This repository serves for the backend for the web app.
 ## Database Schema
 The following tables are implemented in PostgreSQL:
 - **restaurants** - Central entity
-- **users** - Restaurant staff (FK → restaurants)
-- **customers** - End users who place orders
+- **users** - All users including customers and Restaurant staff with role based access (FK → restaurants, nullable)
 - **menus** - Restaurant menus (FK → restaurants)
 - **menu_items** - Individual menu items (FK → menus, restaurants)
 - **tables** - Physical tables with QR codes (FK → restaurants)
-- **orders** - Customer orders (FK → tables, customers, restaurants)
+- **orders** - Customer orders (FK → tables, users, restaurants)
 - **order_items** - Items within an order (FK → orders)
 - **feedback** - Customer feedback (OneToOne → orders)
 
