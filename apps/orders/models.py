@@ -18,7 +18,7 @@ class Order(models.Model):
         related_name="orders",
     )
     customer = models.ForeignKey(
-        "customers.Customer",
+        "accounts.User",
         on_delete=models.SET_NULL,
         null=True,
         related_name="orders",
