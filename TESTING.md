@@ -9,7 +9,7 @@ The TableTap Backend uses pytest for testing with comprehensive coverage of all 
 ## Test Structure
 
 ```
-SAFEHR-v2.0-Backend/
+TableTap-v2.0-Backend/
 ├── apps/
 │   ├── accounts/
 |           ├── tests.py                  # Initial test file
