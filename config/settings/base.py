@@ -65,7 +65,6 @@ INSTALLED_APPS = [
     "apps.restaurants",
     "apps.menus",
     "apps.tables",
-    "apps.customers",
     "apps.orders",
     "apps.feedback",
     "config",
