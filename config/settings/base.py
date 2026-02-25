@@ -73,7 +73,7 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'TableTap API',
-    'DESCRIPTION': 'API Documenation',
+    'DESCRIPTION': 'API Documentation',
     'VERSION': '1.0.0',
 }
 
