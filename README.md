@@ -4,9 +4,22 @@ This repository serves for the backend for the web app.
 ## Tech Stack
 - Framework: [Django](https://www.djangoproject.com/)
 - Databases:
-    - [MongoDB](https://www.mongodb.com/)
+    - [PostgreSQL](https://www.postgresql.org/) (Primary)
+    - [MongoDB](https://www.mongodb.com/) (Analytics)
     - [SQLite](https://sqlite.org/)
 - Language: [Python](https://www.typescriptlang.org/)
+
+## Database Schema
+The following tables are implemented in PostgreSQL:
+- **restaurants** - Central entity
+- **users** - Restaurant staff (FK → restaurants)
+- **customers** - End users who place orders
+- **menus** - Restaurant menus (FK → restaurants)
+- **menu_items** - Individual menu items (FK → menus, restaurants)
+- **tables** - Physical tables with QR codes (FK → restaurants)
+- **orders** - Customer orders (FK → tables, customers, restaurants)
+- **order_items** - Items within an order (FK → orders)
+- **feedback** - Customer feedback (OneToOne → orders)
 
 ## Prerequisites
 - [Python](https://www.python.org/downloads/) (v3.x or higher recommended)
