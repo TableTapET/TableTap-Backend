@@ -114,6 +114,8 @@ ASGI_APPLICATION = "config.asgi.application"
 POSTGRES_USER = os.environ.get("POSTGRES_USER")
 POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
 POSTGRES_DB = os.environ.get("POSTGRES_DB")
+POSTGRES_HOST = os.environ.get("POSTGRES_HOST")
+POSTGRES_PORT = os.environ.get("POSTGRES_PORT")
 
 if not POSTGRES_DB or not POSTGRES_USER or not POSTGRES_PASSWORD:
     raise EnvironmentError(
@@ -126,8 +128,8 @@ DATABASES = {
         "NAME": f"{POSTGRES_DB}",
         "USER": f"{POSTGRES_USER}",
         "PASSWORD": f"{POSTGRES_PASSWORD}",
-        "HOST": "tabletap-postgres",
-        "PORT": "5432",
+        "HOST": f"{POSTGRES_HOST}",
+        "PORT": f"{POSTGRES_PORT}" or "5432",
     }
 }
 
