@@ -7,7 +7,7 @@ This repository serves for the backend for the web app.
     - [PostgreSQL](https://www.postgresql.org/) (Primary)
     - [MongoDB](https://www.mongodb.com/) (Analytics)
     - [SQLite](https://sqlite.org/)
-- Language: [Python](https://www.typescriptlang.org/)
+- Language: [Python](https://www.python.org/)
 
 ## Database Schema
 The following tables are implemented in PostgreSQL:
