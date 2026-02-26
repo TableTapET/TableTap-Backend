@@ -13,9 +13,6 @@ class Table(models.Model):
     class Meta:
         db_table = "tables"
         unique_together = [["restaurant", "table_number"]]
-        indexes = [
-            models.Index(fields=["qr_code_string"]),
-        ]
 
     def __str__(self):
         return f"Table {self.table_number} @ {self.restaurant.name}"

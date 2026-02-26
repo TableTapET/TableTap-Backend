@@ -45,7 +45,6 @@ class MenuItem(models.Model):
         db_table = "menu_items"
         indexes = [
             models.Index(fields=["menu", "is_available"]),
-            models.Index(fields=["restaurant"]),
         ]
 
     def __str__(self):
