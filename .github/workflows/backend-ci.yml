@@ -1,0 +1,80 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: tabletap_test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      
+      mongodb:
+        image: mongo:7
+        env:
+          MONGO_INITDB_ROOT_USERNAME: test_mongo_user
+          MONGO_INITDB_ROOT_PASSWORD: test_mongo_password
+        ports:
+          - 27018:27018
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Spin up MinIO 
+      - name: Start MinIO
+        run: |
+          docker run -d -p 9000:9000 \
+            -e MINIO_ROOT_USER=test_minio_user \
+            -e MINIO_ROOT_PASSWORD=test_minio_password \
+            minio/minio server /data
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11' 
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-django pytest-cov
+
+      - name: Run Tests
+        env:
+          DJANGO_ENV: development
+          DEBUG: True
+          
+          # PostgreSQL maps
+          POSTGRES_DB: tabletap_test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          
+          # MongoDB mmaps
+          MONGO_URI: mongodb://test_mongo_user:test_mongo_password@localhost:27018/?authSource=admin
+          
+          # MinIO maos
+          AWS_S3_ENDPOINT_URL: http://localhost:9000
+          AWS_STORAGE_BUCKET_NAME: tabletap-media
+          AWS_ACCESS_KEY_ID: test_minio_user
+          AWS_SECRET_ACCESS_KEY: test_minio_password
+          
+        run: |
+          python run_tests.py --all
