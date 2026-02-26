@@ -7,4 +7,4 @@ python manage.py migrate
 export DJANGO_SETTINGS_MODULE=config.settings.dev
 
 echo "Starting Django in DEVELOPMENT mode..."
-python manage.py runserver
+python manage.py runserver 0.0.0.0:5001
