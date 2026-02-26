@@ -27,7 +27,7 @@ def run_command(command, description):
 
 
 def run_accounts_tests():
-    """Run authentication tests"""
+    """Run accounts tests"""
     command = "python -m pytest apps/accounts/tests/ -v --tb=short"
     return run_command(command, "Accounts Tests")
 
@@ -58,7 +58,7 @@ def run_marked_tests(marker):
 
 def lint_tests():
     """Run linting on test files"""
-    command = "python -m flake8 apps/*/tests/ --max-line-length=120 --ignore=E501,W503"
+    command = "python -m flake8 apps/*/tests/ --max-line-length=88 --ignore=E203,W503"
     return run_command(command, "Test Linting")
 
 

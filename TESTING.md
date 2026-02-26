@@ -12,10 +12,10 @@ The TableTap Backend uses pytest for testing with comprehensive coverage of all 
 TableTap-v2.0-Backend/
 ├── apps/
 │   ├── accounts/
-|           ├── tests.py                  # Initial test file
-├── pytest.ini                            # Pytest configuration
-├── run_tests.py                          # Test runner script
-└── TESTING.md                            # This file
+|   |   ├── tests.py                    # Initial test file
+├── pytest.ini                          # Pytest configuration
+├── run_tests.py                        # Test runner script
+└── TESTING.md                          # This file
 ```
 
 ## Running Tests
@@ -28,7 +28,7 @@ The `run_tests.py` script provides convenient ways to run different types of tes
 # Run all tests
 python run_tests.py --all
 
-# Run authentication tests only
+# Run accounts tests only
 python run_tests.py --accounts
 
 # Run tests with coverage
