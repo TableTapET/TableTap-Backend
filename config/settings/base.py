@@ -62,6 +62,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "apps.accounts",
+    "apps.restaurants",
+    "apps.menus",
+    "apps.tables",
+    "apps.orders",
+    "apps.feedback",
     "config",
     "rest_framework",
     "drf_spectacular",
@@ -173,3 +178,5 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = "accounts.User"
