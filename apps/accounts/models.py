@@ -1,7 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-
-class User(models.Model):
+class User(AbstractUser):
     ROLE_CHOICES = [
         ("owner", "Owner"),
         ("manager", "Manager"),
@@ -16,10 +16,8 @@ class User(models.Model):
         blank=True,
         null=True,
     )
-    username = models.CharField(max_length=150, unique=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
     name = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
@@ -29,6 +27,3 @@ class User(models.Model):
             models.Index(fields=["phone_number"]),
             models.Index(fields=["role"]),
         ]
-
-    def __str__(self):
-        return f"{self.username} ({self.role})"
