@@ -43,8 +43,6 @@ class Order(models.Model):
         ordering = ["-created_at"]
         indexes = [
             models.Index(fields=["restaurant", "status"]),
-            models.Index(fields=["customer"]),
-            models.Index(fields=["table"]),
             models.Index(fields=["-created_at"]),
         ]
 
