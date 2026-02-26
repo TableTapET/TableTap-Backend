@@ -68,13 +68,13 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'TableTap API',
-    'DESCRIPTION': 'API Documentation',
-    'VERSION': '1.0.0',
+    "TITLE": "TableTap API",
+    "DESCRIPTION": "API Documentation",
+    "VERSION": "1.0.0",
 }
 
 MIDDLEWARE = [
@@ -116,7 +116,9 @@ POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
 POSTGRES_DB = os.environ.get("POSTGRES_DB")
 
 if not POSTGRES_DB or not POSTGRES_USER or not POSTGRES_PASSWORD:
-    raise EnvironmentError("Please ensure the postgres credentials are setup correctly!")
+    raise EnvironmentError(
+        "Please ensure the postgres credentials are setup correctly!"
+    )
 
 DATABASES = {
     "default": {
@@ -125,7 +127,7 @@ DATABASES = {
         "USER": f"{POSTGRES_USER}",
         "PASSWORD": f"{POSTGRES_PASSWORD}",
         "HOST": "tabletap-postgres",
-        "PORT": "5432", 
+        "PORT": "5432",
     }
 }
 
