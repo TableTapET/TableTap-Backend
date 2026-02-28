@@ -66,6 +66,8 @@ jobs:
           POSTGRES_DB: tabletap_test_db
           POSTGRES_USER: test_user
           POSTGRES_PASSWORD: test_password
+          POSTGRES_HOST: localhost    
+          POSTGRES_PORT: 5432
           
           # MongoDB mmaps
           MONGO_URI: mongodb://test_mongo_user:test_mongo_password@localhost:27018/?authSource=admin
