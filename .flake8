@@ -1,10 +1,13 @@
 [flake8]
 max-line-length = 88
 extend-ignore = E203, W503
-exclude = 
+exclude =
     .git,
     __pycache__,
     migrations,
     venv,
     env,
     .venv
+per-file-ignores =
+    config/settings/dev.py: F403,F405
+    config/settings/prod.py: F403,F405
