@@ -15,8 +15,6 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-# from mongoengine import connect
-
 env_name = os.getenv("DJANGO_ENV", "development")
 
 if env_name == "production":
