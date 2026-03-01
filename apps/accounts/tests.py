@@ -1,4 +1,8 @@
 import pytest
+from django.test import TestCase
+
+# Create your tests here.
+from rest_framework.test import APIClient
 
 
 # This is a placeholder test function
@@ -6,4 +10,4 @@ import pytest
 @pytest.mark.django_db
 def test_api():
     temp = True
-    assert temp is True
+    assert temp == True
