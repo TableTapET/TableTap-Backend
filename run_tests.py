@@ -40,7 +40,10 @@ def run_all_tests():
 
 def run_coverage_tests():
     """Run tests with coverage"""
-    command = "python -m pytest apps/ --cov=apps.accounts --cov-report=html --cov-report=term-missing"
+    command = (
+        "python -m pytest apps/ --cov=apps.accounts",
+        "--cov-report=html --cov-report=term-missing",
+    )
     return run_command(command, "Tests with Coverage")
 
 
