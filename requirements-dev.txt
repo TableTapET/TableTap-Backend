@@ -1,0 +1,32 @@
+-r requirements.txt
+
+# Formatting & Linting
+black==25.1.0
+djlint==1.36.4
+flake8==7.3.0
+flake8-bugbear==25.11.29
+isort==6.0.1
+pycodestyle==2.14.0
+pyflakes==3.4.0
+Pygments==2.19.2
+cssbeautifier==1.15.4
+jsbeautifier==1.15.4
+EditorConfig==0.17.1
+
+# Tooling & Infrastructure
+click==8.2.1
+colorama==0.4.6
+constantly==23.10.4
+filelock==3.18.0
+mccabe==0.7.0
+mypy_extensions==1.1.0
+pathspec==0.12.1
+platformdirs==4.3.8
+pre-commit==4.5.1
+
+# Testing
+pytest==9.0.2
+iniconfig==2.3.0
+pluggy==1.6.0
+json5==0.12.0
+regex==2025.7.34
