@@ -9,9 +9,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "insecure-dev-key")
 
 ALLOWED_HOSTS = ["*"]
 
-CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000").split(
-    ","
-)
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS").split(",")
 
 # Dev email (MailHog or console)
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
