@@ -30,26 +30,22 @@ The following tables are implemented in PostgreSQL:
     git clone https://github.com/TableTapET/TableTap-Backend.git
     cd TableTap-Backend
     ```
-2. **Create [vitrual environment](https://docs.python.org/3/library/venv.html)**
-   ```bash
-   python -m venv .venv
-   ```
+2. **Run the dev setup script** (creates `.venv`, installs dependencies, and installs pre-commit hooks):
+    ```bash
+    python scripts/setup_dev.py
+    ```
 3. **Activate virtual environment**
    > Once activated you should see something like this:
    >  - Windows: "(.venv) C:\<directory to project>\TableTap-Backend"
    >  - Mac\Linux: "(.venv) <username>@<device> TableTap-Backend"
    - Windows
      ```bash
-     .venv\Scripts\activate.bat 
+     .venv\Scripts\activate.bat
      ```
    - Mac/Linux
      ```bash
      source .venv/bin/activate
      ```
-4. **Install dependencies to virtual environment**:
-    ```
-    pip install -r requirements.txt
-    ```
 
 ## Usage(without docker)
 > Running the backend locally will work, but it may not connect correctly with frontend.  
@@ -72,4 +68,5 @@ The following tables are implemented in PostgreSQL:
 - `python manage.py migrate` → Initialize database.
 - `python manage.py makemigrations` → Update database with new tables.
 - `black .` → Fix any formatting errors.
-- `isort . ` → Sort imports in project
+- `isort .` → Sort imports in project
+- `pip install <package> && pip freeze > requirements.txt` → Install a new package and update the requirements file so other developers get it when they run `pip install -r requirements.txt`
