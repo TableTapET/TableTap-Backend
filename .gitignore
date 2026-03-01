@@ -2,6 +2,11 @@
 *.pyc 
 /notes
 
+# Virtual Environments
+.venv/
+venv/
+env/
+
 # PyCache
 __pycache__/
 
