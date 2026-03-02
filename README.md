@@ -69,4 +69,4 @@ The following tables are implemented in PostgreSQL:
 - `python manage.py makemigrations` → Update database with new tables.
 - `black .` → Fix any formatting errors.
 - `isort .` → Sort imports in project
-- `pip install <package> && pip freeze > requirements.txt` → Install a new package and update the requirements file so other developers get it when they run `pip install -r requirements.txt`
+- `pip install <package> && pip freeze > requirements-dev.txt` → Install a new package and update the requirements file so other developers get it when they run `pip install -r requirements-dev.txt`

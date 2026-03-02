@@ -45,7 +45,7 @@ def main() -> None:
     step("Upgrading pip...")
     run([str(PYTHON), "-m", "pip", "install", "--upgrade", "pip", "-q"])
 
-    step("Installing dependencies from requirements.txt...")
+    step("Installing dependencies from requirements-dev.txt...")
     run(
         [
             str(PYTHON),
@@ -53,7 +53,7 @@ def main() -> None:
             "pip",
             "install",
             "-r",
-            str(ROOT / "requirements.txt"),
+            str(ROOT / "requirements-dev.txt"),
             "-q",
         ]
     )
