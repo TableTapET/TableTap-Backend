@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "apps.tables",
     "apps.orders",
     "apps.feedback",
+    "core",
     "config",
     "rest_framework",
     "drf_spectacular",
