@@ -1,5 +1,7 @@
 from django.db import models
 
+from core.models.base import TimestampModel, UUIDModel
+
 
 class Menu(models.Model):
     restaurant = models.ForeignKey(
@@ -23,16 +25,31 @@ class Menu(models.Model):
         return f"{self.name} ({self.restaurant.name})"
 
 
+class MenuCategory(TimestampModel, UUIDModel):
+    menu_id = models.ForeignKey(
+        "menus.Menu", on_delete=models.CASCADE, related_name="menu_categories"
+    )
+    name = models.TextField()
+    description = models.TextField()
+    is_available = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = "menu_category"
+        indexes = [
+            models.Index(fields=["menu_id", "is_available"]),
+        ]
+
+
 class MenuItem(models.Model):
     menu = models.ForeignKey(
         "menus.Menu",
         on_delete=models.CASCADE,
         related_name="items",
     )
-    restaurant = models.ForeignKey(
-        "restaurants.Restaurant",
+    category_id = models.ForeignKey(
+        "menus.MenuCategory",
         on_delete=models.CASCADE,
-        related_name="menu_items",
+        related_name="items",
     )
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2)
