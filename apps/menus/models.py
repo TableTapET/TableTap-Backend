@@ -26,8 +26,10 @@ class Menu(models.Model):
 
 
 class MenuCategory(TimestampModel, UUIDModel):
-    menu_id = models.ForeignKey(
-        "menus.Menu", on_delete=models.CASCADE, related_name="menu_categories"
+    menu = models.ForeignKey(
+        "menus.Menu",
+        on_delete=models.CASCADE,
+        related_name="categories",
     )
     name = models.TextField()
     description = models.TextField()
@@ -36,7 +38,7 @@ class MenuCategory(TimestampModel, UUIDModel):
     class Meta:
         db_table = "menu_category"
         indexes = [
-            models.Index(fields=["menu_id", "is_available"]),
+            models.Index(fields=["menu", "is_available"]),
         ]
 
 
@@ -46,7 +48,7 @@ class MenuItem(models.Model):
         on_delete=models.CASCADE,
         related_name="items",
     )
-    category_id = models.ForeignKey(
+    category = models.ForeignKey(
         "menus.MenuCategory",
         on_delete=models.CASCADE,
         related_name="items",
@@ -61,7 +63,7 @@ class MenuItem(models.Model):
     class Meta:
         db_table = "menu_items"
         indexes = [
-            models.Index(fields=["menu", "is_available"]),
+            models.Index(fields=["menu", "category", "is_available"]),
         ]
 
     def __str__(self):
