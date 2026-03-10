@@ -1,15 +1,18 @@
 # Use an official Python runtime as a parent image
-FROM python:3.13.1
+FROM python:3.13-slim
 
 # Set the working directory in the container
 WORKDIR /TableTap-Backend
 
+# Choose which requirements file to install
+ARG REQUIREMENTS_FILE=requirements.txt
+
 # Copy requirements and install first to use Docker cache
-COPY requirements.txt .
+COPY ${REQUIREMENTS_FILE} /tmp/requirements.txt
 
 # Install dependencies
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install -r /tmp/requirements.txt
 RUN pip install daphne
 
 # Copy the backend code into the container at /TableTap-Backend
