@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.menus.models import Menu, MenuCategory
+from apps.menus.models import Menu, MenuCategory, MenuItem
 
 
 @admin.register(Menu)
@@ -14,4 +14,11 @@ class MenuAdmin(admin.ModelAdmin):
 class MenuCategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "menu", "is_available", "created_at")
     list_filter = ("is_available", "menu")
+    search_fields = ("name", "description")
+
+
+@admin.register(MenuItem)
+class MenuItemAdmin(admin.ModelAdmin):
+    list_display = ("name", "price", "is_available", "category", "menu")
+    list_filter = ("is_available", "menu", "category")
     search_fields = ("name", "description")
