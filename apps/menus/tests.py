@@ -178,7 +178,7 @@ class TestCategoryList:
         url = reverse("category-list")
         response = api_client.get(url)
 
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_cross_restaurant_isolation(
         self, api_client, owner, category_a, category_b
@@ -357,7 +357,7 @@ class TestMenuItemList:
         url = reverse("menuitem-list")
         response = api_client.get(url)
 
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_cross_restaurant_isolation(
         self, api_client, owner, menu_item, menu_item_b
