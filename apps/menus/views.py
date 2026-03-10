@@ -26,6 +26,4 @@ class MenuItemViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]
 
     def get_queryset(self):
-        return MenuItem.objects.filter(
-            menu__restaurant=self.request.user.restaurant
-        )
+        return MenuItem.objects.filter(menu__restaurant=self.request.user.restaurant)

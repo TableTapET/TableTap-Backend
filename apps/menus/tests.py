@@ -7,7 +7,6 @@ from apps.accounts.models import User
 from apps.menus.models import Menu, MenuCategory, MenuItem
 from apps.restaurants.models import Restaurant
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -540,4 +539,3 @@ class TestMenuItemDelete:
         response = api_client.delete(url)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
-
