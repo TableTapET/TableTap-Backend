@@ -1,10 +1,13 @@
 import pytest
+from django.contrib.auth.models import AnonymousUser
+from django.contrib.sessions.backends.db import SessionStore
 from django.db import IntegrityError
 from django.test import RequestFactory
 from rest_framework.test import APIClient
 
 from apps.accounts.models import GuestUser, User
 from apps.restaurants.models import Restaurant
+from core.middleware import GuestUserMiddleware
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -164,3 +167,107 @@ class TestGuestUserAPI:
             format="json",
         )
         assert response.status_code == 201
+
+
+# ---------------------------------------------------------------------------
+# Middleware Tests
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def request_factory():
+    return RequestFactory()
+
+
+@pytest.mark.django_db
+class TestGuestUserMiddleware:
+    """Tests for the GuestUserMiddleware."""
+
+    def _make_middleware(self, response_value=None):
+        """Return a middleware instance with a dummy get_response."""
+        return GuestUserMiddleware(lambda req: response_value)
+
+    def test_anonymous_request_sets_guest_user_none_when_no_guest_exists(
+        self, request_factory
+    ):
+        """Anonymous request with no matching GuestUser → request.guest_user is None."""
+        middleware = self._make_middleware()
+        request = request_factory.get("/")
+        request.user = AnonymousUser()
+        request.session = SessionStore()
+        request.session.create()
+
+        middleware(request)
+
+        assert request.guest_user is None
+
+    def test_anonymous_request_attaches_existing_guest(
+        self, request_factory, restaurant
+    ):
+        """Anonymous request whose session already has a GuestUser → attached."""
+        session = SessionStore()
+        session.create()
+        guest = GuestUser.objects.create(
+            session_key=session.session_key, restaurant=restaurant
+        )
+
+        middleware = self._make_middleware()
+        request = request_factory.get("/")
+        request.user = AnonymousUser()
+        request.session = session
+
+        middleware(request)
+
+        assert request.guest_user is not None
+        assert request.guest_user.pk == guest.pk
+
+    def test_authenticated_request_sets_guest_user_none(
+        self, request_factory, restaurant
+    ):
+        """Authenticated users should never get a guest_user attached."""
+        user = User.objects.create_user(
+            username="staffuser", password="pass", role="staff"
+        )
+        middleware = self._make_middleware()
+        request = request_factory.get("/")
+        request.user = user
+        request.session = SessionStore()
+
+        middleware(request)
+
+        assert request.guest_user is None
+
+    def test_middleware_creates_session_key_if_missing(self, request_factory):
+        """If the session has no key yet, the middleware should create one."""
+        middleware = self._make_middleware()
+        request = request_factory.get("/")
+        request.user = AnonymousUser()
+        request.session = SessionStore()
+        assert request.session.session_key is None
+
+        middleware(request)
+
+        assert request.session.session_key is not None
+        assert request.guest_user is None
+
+    def test_middleware_does_not_overwrite_existing_session(
+        self, request_factory, restaurant
+    ):
+        """Middleware should reuse the existing session key, not create a new one."""
+        session = SessionStore()
+        session.create()
+        original_key = session.session_key
+
+        guest = GuestUser.objects.create(
+            session_key=original_key, restaurant=restaurant
+        )
+
+        middleware = self._make_middleware()
+        request = request_factory.get("/")
+        request.user = AnonymousUser()
+        request.session = session
+
+        middleware(request)
+
+        assert request.session.session_key == original_key
+        assert request.guest_user.pk == guest.pk
