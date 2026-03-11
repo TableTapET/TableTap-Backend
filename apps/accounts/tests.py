@@ -343,3 +343,168 @@ class TestGetCurrentActor:
         actor = get_current_actor(request)
 
         assert actor is None
+
+
+# ---------------------------------------------------------------------------
+# JWT Authentication Tests
+# ---------------------------------------------------------------------------
+
+LOGIN_URL = "/api/user/login/"
+LOGOUT_URL = "/api/user/logout/"
+REFRESH_URL = "/api/user/refresh_token/"
+ME_URL = "/api/user/me/"
+
+
+@pytest.fixture
+def auth_user(db):
+    return User.objects.create_user(
+        username="jwtuser",
+        password="testpass123",
+        email="jwt@example.com",
+        role="manager",
+        name="JWT User",
+    )
+
+
+@pytest.mark.django_db
+class TestLoginView:
+    """Tests for POST /api/user/login/."""
+
+    def test_login_success(self, api_client, auth_user):
+        response = api_client.post(
+            LOGIN_URL,
+            data={"username": "jwtuser", "password": "testpass123"},
+            format="json",
+        )
+        assert response.status_code == 200
+        assert response.data["detail"] == "Login successful."
+        assert "access_token" in response.cookies
+        assert "refresh_token" in response.cookies
+        assert response.cookies["access_token"]["httponly"]
+        assert response.cookies["refresh_token"]["httponly"]
+
+    def test_login_invalid_credentials(self, api_client, auth_user):
+        response = api_client.post(
+            LOGIN_URL,
+            data={"username": "jwtuser", "password": "wrongpass"},
+            format="json",
+        )
+        assert response.status_code == 400
+
+    def test_login_missing_fields(self, api_client):
+        response = api_client.post(LOGIN_URL, data={}, format="json")
+        assert response.status_code == 400
+
+    def test_login_nonexistent_user(self, api_client):
+        response = api_client.post(
+            LOGIN_URL,
+            data={"username": "noone", "password": "whatever"},
+            format="json",
+        )
+        assert response.status_code == 400
+
+
+@pytest.mark.django_db
+class TestRefreshView:
+    """Tests for POST /api/user/refresh_token/."""
+
+    def test_refresh_success(self, api_client, auth_user):
+        # First login to get cookies
+        api_client.post(
+            LOGIN_URL,
+            data={"username": "jwtuser", "password": "testpass123"},
+            format="json",
+        )
+        response = api_client.post(REFRESH_URL)
+        assert response.status_code == 200
+        assert response.data["detail"] == "Token refreshed."
+        assert "access_token" in response.cookies
+
+    def test_refresh_without_cookie(self, api_client):
+        response = api_client.post(REFRESH_URL)
+        assert response.status_code == 401
+        assert response.data["detail"] == "Refresh token not found."
+
+    def test_refresh_invalid_token(self, api_client):
+        api_client.cookies.load({"refresh_token": "invalid.token.here"})
+        response = api_client.post(REFRESH_URL)
+        assert response.status_code == 401
+        assert response.data["detail"] == "Invalid or expired refresh token."
+
+
+@pytest.mark.django_db
+class TestLogoutView:
+    """Tests for POST /api/user/logout/."""
+
+    def test_logout_clears_cookies(self, api_client, auth_user):
+        # Login first
+        api_client.post(
+            LOGIN_URL,
+            data={"username": "jwtuser", "password": "testpass123"},
+            format="json",
+        )
+        response = api_client.post(LOGOUT_URL)
+        assert response.status_code == 200
+        assert response.data["detail"] == "Logged out."
+        # Cookies are deleted (max-age=0)
+        assert response.cookies["access_token"]["max-age"] == 0
+        assert response.cookies["refresh_token"]["max-age"] == 0
+
+    def test_logout_without_cookies(self, api_client):
+        # Should still succeed gracefully
+        response = api_client.post(LOGOUT_URL)
+        assert response.status_code == 200
+
+
+@pytest.mark.django_db
+class TestMeView:
+    """Tests for GET /api/user/me/."""
+
+    def test_me_authenticated(self, api_client, auth_user):
+        # Login to get cookies
+        api_client.post(
+            LOGIN_URL,
+            data={"username": "jwtuser", "password": "testpass123"},
+            format="json",
+        )
+        response = api_client.get(ME_URL)
+        assert response.status_code == 200
+        assert response.data["username"] == "jwtuser"
+        assert response.data["email"] == "jwt@example.com"
+        assert response.data["role"] == "manager"
+
+    def test_me_unauthenticated(self, api_client):
+        response = api_client.get(ME_URL)
+        assert response.status_code == 401
+
+
+# ---------------------------------------------------------------------------
+# CookieJWTAuthentication Tests
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+class TestCookieJWTAuthentication:
+    """Tests for the CookieJWTAuthentication backend."""
+
+    def test_auth_via_cookie(self, api_client, auth_user):
+        """Access token in cookie should authenticate the user."""
+        api_client.post(
+            LOGIN_URL,
+            data={"username": "jwtuser", "password": "testpass123"},
+            format="json",
+        )
+        # Cookie is automatically sent by the test client
+        response = api_client.get(ME_URL)
+        assert response.status_code == 200
+        assert response.data["username"] == "jwtuser"
+
+    def test_auth_via_header(self, api_client, auth_user):
+        """Bearer token in Authorization header should also work."""
+        from rest_framework_simplejwt.tokens import RefreshToken
+
+        refresh = RefreshToken.for_user(auth_user)
+        api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
+        response = api_client.get(ME_URL)
+        assert response.status_code == 200
+        assert response.data["username"] == "jwtuser"
