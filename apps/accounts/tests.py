@@ -8,6 +8,7 @@ from rest_framework.test import APIClient
 from apps.accounts.models import GuestUser, User
 from apps.restaurants.models import Restaurant
 from core.middleware import GuestUserMiddleware
+from core.utils.actors import get_current_actor
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -271,3 +272,74 @@ class TestGuestUserMiddleware:
 
         assert request.session.session_key == original_key
         assert request.guest_user.pk == guest.pk
+
+
+# ---------------------------------------------------------------------------
+# Actor Resolver Tests
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+class TestGetCurrentActor:
+    """Tests for the get_current_actor utility."""
+
+    def test_returns_authenticated_user(self, request_factory):
+        """When request.user is authenticated, return the User."""
+        user = User.objects.create_user(
+            username="actor_user", password="pass", role="manager"
+        )
+        request = request_factory.get("/")
+        request.user = user
+        request.guest_user = None
+
+        actor = get_current_actor(request)
+
+        assert actor == user
+        assert isinstance(actor, User)
+
+    def test_returns_guest_user_when_anonymous(self, request_factory, guest_user):
+        """When request.user is anonymous but guest_user exists, return GuestUser."""
+        request = request_factory.get("/")
+        request.user = AnonymousUser()
+        request.guest_user = guest_user
+
+        actor = get_current_actor(request)
+
+        assert actor == guest_user
+        assert isinstance(actor, GuestUser)
+
+    def test_returns_none_when_fully_anonymous(self, request_factory):
+        """When no user and no guest_user, return None."""
+        request = request_factory.get("/")
+        request.user = AnonymousUser()
+        request.guest_user = None
+
+        actor = get_current_actor(request)
+
+        assert actor is None
+
+    def test_prefers_authenticated_user_over_guest(self, request_factory, guest_user):
+        """Even if guest_user is set, an authenticated user takes priority."""
+        user = User.objects.create_user(
+            username="priority_user", password="pass", role="staff"
+        )
+        request = request_factory.get("/")
+        request.user = user
+        request.guest_user = guest_user
+
+        actor = get_current_actor(request)
+
+        assert actor == user
+        assert isinstance(actor, User)
+
+    def test_handles_missing_user_attribute(self, request_factory):
+        """If request has no user attribute at all, fall back gracefully."""
+        request = request_factory.get("/")
+        # Remove user attribute entirely
+        if hasattr(request, "user"):
+            del request.user
+        request.guest_user = None
+
+        actor = get_current_actor(request)
+
+        assert actor is None
