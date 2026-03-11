@@ -4,7 +4,6 @@ from rest_framework import status
 
 from apps.menus.models import MenuCategory, MenuItem
 
-
 # ---------------------------------------------------------------------------
 # TAB-42: Menu Category CRUD Tests
 # ---------------------------------------------------------------------------
