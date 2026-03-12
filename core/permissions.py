@@ -47,3 +47,16 @@ class IsOwnerOrManager(BasePermission):
             "owner",
             "manager",
         )
+
+
+class IsRestaurantStaff(BasePermission):
+    """
+    Allow access to authenticated users with owner, manager, or staff roles.
+    """
+
+    def has_permission(self, request, __view__):
+        return request.user.is_authenticated and request.user.role in (
+            "owner",
+            "manager",
+            "staff",
+        )

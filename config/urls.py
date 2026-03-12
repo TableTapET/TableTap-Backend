@@ -24,6 +24,8 @@ urlpatterns = [
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     # Link to API of the accounts app
     path("api/user/", include("apps.accounts.urls")),
+    # Link to API of the menus app
+    path("api/menu/", include("apps.menus.urls")),
     # Enables Swagger UI for API documentation (DO NOT REMOVE)
     path(
         "api/docs/",
