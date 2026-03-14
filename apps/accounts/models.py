@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from core.models.base import TimestampModel
+
 
 class User(AbstractUser):
     ROLE_CHOICES = [
@@ -28,3 +30,27 @@ class User(AbstractUser):
             models.Index(fields=["phone_number"]),
             models.Index(fields=["role"]),
         ]
+
+
+class GuestUser(TimestampModel):
+    """
+    Represents an anonymous guest tied to a Django session.
+    Enables guests to browse menus and place orders without authentication.
+    This model is NOT part of Django's auth system.
+    """
+
+    session_key = models.CharField(max_length=40, unique=True)
+    restaurant = models.ForeignKey(
+        "restaurants.Restaurant",
+        on_delete=models.CASCADE,
+        related_name="guest_users",
+    )
+
+    class Meta:
+        db_table = "guest_users"
+        indexes = [
+            models.Index(fields=["session_key"]),
+        ]
+
+    def __str__(self):
+        return f"Guest({self.session_key[:8]}...) @ {self.restaurant.name}"
