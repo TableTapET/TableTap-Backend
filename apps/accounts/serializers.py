@@ -33,3 +33,15 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "username", "email", "name", "role", "restaurant"]
         read_only_fields = fields
+
+
+class SignupSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, min_length=8)
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "password", "name", "phone_number"]
+
+    def create(self, validated_data):
+        # Public signup creates customer accounts by default.
+        return User.objects.create_user(role="customer", **validated_data)

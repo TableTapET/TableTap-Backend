@@ -9,6 +9,7 @@ from apps.accounts.models import GuestUser
 from apps.accounts.serializers import (
     GuestUserSerializer,
     LoginSerializer,
+    SignupSerializer,
     UserSerializer,
 )
 
@@ -65,6 +66,25 @@ class LoginView(APIView):
             status=status.HTTP_200_OK,
         )
         return _set_jwt_cookies(response, refresh.access_token, refresh)
+
+
+class SignupView(APIView):
+    """
+    POST /api/user/signup/
+    Create a new customer account.
+    """
+
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        serializer = SignupSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            {"detail": "Signup successful."},
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class RefreshView(APIView):

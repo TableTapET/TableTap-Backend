@@ -353,6 +353,7 @@ LOGIN_URL = "/api/user/login/"
 LOGOUT_URL = "/api/user/logout/"
 REFRESH_URL = "/api/user/refresh_token/"
 ME_URL = "/api/user/me/"
+SIGNUP_URL = "/api/user/signup/"
 
 
 @pytest.fixture
@@ -402,6 +403,53 @@ class TestLoginView:
             format="json",
         )
         assert response.status_code == 400
+
+
+@pytest.mark.django_db
+class TestSignupView:
+    """Tests for POST /api/user/signup/."""
+
+    def test_signup_success(self, api_client):
+        payload = {
+            "username": "newcustomer",
+            "email": "newcustomer@example.com",
+            "password": "testpass123",
+            "name": "New Customer",
+            "phone_number": "+251900000000",
+        }
+
+        response = api_client.post(SIGNUP_URL, data=payload, format="json")
+
+        assert response.status_code == 201
+        assert response.data["detail"] == "Signup successful."
+        user = User.objects.get(username="newcustomer")
+        assert user.role == "customer"
+        assert user.email == "newcustomer@example.com"
+        assert user.check_password("testpass123")
+
+    def test_signup_rejects_duplicate_username(self, api_client, auth_user):
+        payload = {
+            "username": auth_user.username,
+            "email": "another@example.com",
+            "password": "testpass123",
+        }
+
+        response = api_client.post(SIGNUP_URL, data=payload, format="json")
+
+        assert response.status_code == 400
+        assert "username" in response.data
+
+    def test_signup_requires_minimum_password_length(self, api_client):
+        payload = {
+            "username": "shortpass",
+            "email": "shortpass@example.com",
+            "password": "short",
+        }
+
+        response = api_client.post(SIGNUP_URL, data=payload, format="json")
+
+        assert response.status_code == 400
+        assert "password" in response.data
 
 
 @pytest.mark.django_db
